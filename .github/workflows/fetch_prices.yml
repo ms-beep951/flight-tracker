@@ -1,0 +1,33 @@
+name: Fetch Flight Prices Daily
+
+on:
+  schedule:
+    - cron: '0 8 * * *'   # 8 AM UTC = 9 AM Irish time (BST)
+  workflow_dispatch:        # allow manual trigger from GitHub UI
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Fetch prices
+        run: python fetch_prices.py
+
+      - name: Commit updated prices.json
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add prices.json
+          git diff --cached --quiet || git commit -m "chore: update prices $(date -u '+%Y-%m-%d')"
+          git push
