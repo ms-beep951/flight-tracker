@@ -118,5 +118,25 @@
       "active": false,
       "details": "No active Ryanair sales detected"
     }
+  },
+  {
+    "date": "2026-04-04",
+    "ryanair": {
+      "fetchStatus": "ok",
+      "baseFare": 596.15,
+      "baggageFees": 160.0,
+      "baggageNote": "€160.00 (est: 2×20kg bags + priority x2 adults, both dirs)",
+      "totalEUR": 756.15,
+      "outboundFare": 281.8,
+      "inboundFare": 314.35
+    },
+    "skyscanner": {
+      "fetchStatus": "failed",
+      "reason": "403 Client Error: Forbidden for url: https://www.skyscanner.net/g/conductor/v1/fps3/search/?geo_schema=skyscanner&cabin_class=economy&response_include=query%3Bstats%3Bpaging"
+    },
+    "saleAlert": {
+      "active": false,
+      "details": "No active Ryanair sales detected"
+    }
   }
 ]
