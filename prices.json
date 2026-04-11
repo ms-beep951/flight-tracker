@@ -248,5 +248,20 @@
       "active": false,
       "details": "No active Ryanair sales detected"
     }
+  },
+  {
+    "date": "2026-04-11",
+    "ryanair": {
+      "fetchStatus": "failed",
+      "reason": "409 Client Error: Conflict for url: https://www.ryanair.com/api/booking/v4/en-gb/availability?ADT=2&CHD=3&DateIn=2026-05-16&DateOut=2026-05-10&Destination=FAO&FlexDaysBeforeIn=0&FlexDaysBeforeOut=0&FlexDaysIn=0&FlexDaysOut=0&Origin=DUB&RoundTrip=true&ToUs=AGREED"
+    },
+    "skyscanner": {
+      "fetchStatus": "failed",
+      "reason": "403 Client Error: Forbidden for url: https://www.skyscanner.net/g/conductor/v1/fps3/search/?geo_schema=skyscanner&cabin_class=economy&response_include=query%3Bstats%3Bpaging"
+    },
+    "saleAlert": {
+      "active": false,
+      "details": "No active Ryanair sales detected"
+    }
   }
 ]
