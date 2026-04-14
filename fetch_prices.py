@@ -62,30 +62,38 @@ def baggage_cost():
 
 def make_session():
     s = requests.Session()
-    try:
-        s.get("https://www.ryanair.com/en/ie", headers=HEADERS, timeout=12)
-    except Exception:
-        pass
+    # Warm up session with homepage to get cookies (GDPR/cf clearance)
+    for url in ["https://www.ryanair.com/en/ie", "https://www.ryanair.com/"]:
+        try:
+            s.get(url, headers=HEADERS, timeout=12)
+            time.sleep(1)
+        except Exception:
+            pass
     return s
 
 
 # ── Ryanair flight price ───────────────────────────────────────────────────────
 
 def fetch_ryanair(session):
-    url = "https://www.ryanair.com/api/booking/v4/en-gb/availability"
+    """
+    Uses Ryanair's fare-finder API (farfnd/v4/roundTripFares).
+    Returns the cheapest available round trip for all passengers combined.
+    Prices are totals for ADT+CHD passengers, not per-person.
+    """
+    url = "https://www.ryanair.com/api/farfnd/v4/roundTripFares"
     params = {
-        "ADT": ADULTS,
-        "CHD": CHILDREN,
-        "DateIn":            INBOUND_DATE,
-        "DateOut":           OUTBOUND_DATE,
-        "Destination":       DESTINATION,
-        "FlexDaysBeforeIn":  0,
-        "FlexDaysBeforeOut": 0,
-        "FlexDaysIn":        0,
-        "FlexDaysOut":       0,
-        "Origin":    ORIGIN,
-        "RoundTrip": "true",
-        "ToUs":      "AGREED",
+        "departureAirportIataCode":  ORIGIN,
+        "arrivalAirportIataCode":    DESTINATION,
+        "outboundDepartureDateFrom": OUTBOUND_DATE,
+        "outboundDepartureDateTo":   OUTBOUND_DATE,
+        "inboundDepartureDateFrom":  INBOUND_DATE,
+        "inboundDepartureDateTo":    INBOUND_DATE,
+        "durationFrom": 5,
+        "durationTo":   5,
+        "adultPaxCount":  ADULTS,
+        "childrenCount":  CHILDREN,
+        "RoundTrip":      True,
+        "currency":       "EUR",
     }
     try:
         r = session.get(url, params=params, headers=HEADERS, timeout=20)
@@ -94,44 +102,37 @@ def fetch_ryanair(session):
     except Exception as e:
         return {"fetchStatus": "failed", "reason": str(e)}
 
-    outbound_fare = None
-    inbound_fare  = None
+    fares = data.get("fares", [])
+    if not fares:
+        return {"fetchStatus": "failed", "reason": "No fares returned"}
 
-    for trip in data.get("trips", []):
-        orig = trip.get("origin", "")
-        for date_block in trip.get("dates", []):
-            for flight in date_block.get("flights", []):
-                if flight.get("faresLeft", 0) == 0:
-                    continue
-                reg = flight.get("regularFare")
-                if not reg:
-                    continue
-                total = sum(
-                    f.get("publishedFare", 0) * f.get("count", 0)
-                    for f in reg.get("fares", [])
-                )
-                if orig == ORIGIN and outbound_fare is None:
-                    outbound_fare = total
-                    break
-                elif orig == DESTINATION and inbound_fare is None:
-                    inbound_fare = total
-                    break
+    # Pick the cheapest round-trip combo
+    best = min(
+        fares,
+        key=lambda f: (f["outbound"]["price"]["value"] + f["inbound"]["price"]["value"])
+    )
+    outbound_fare = best["outbound"]["price"]["value"]
+    inbound_fare  = best["inbound"]["price"]["value"]
+    outbound_flight = best["outbound"].get("flightNumber", "")
+    inbound_flight  = best["inbound"].get("flightNumber", "")
+    outbound_departs = best["outbound"].get("departureDate", "")
+    inbound_departs  = best["inbound"].get("departureDate", "")
 
-    if outbound_fare is None and inbound_fare is None:
-        return {"fetchStatus": "failed", "reason": "No fares returned by API"}
-
-    base  = round((outbound_fare or 0) + (inbound_fare or 0), 2)
+    base  = round(outbound_fare + inbound_fare, 2)
     bags  = baggage_cost()
     total = round(base + bags, 2)
 
     return {
-        "fetchStatus":  "ok",
-        "baseFare":     base,
-        "baggageFees":  bags,
-        "baggageNote":  f"€{bags:.2f} (est: {CHECKED_BAGS}×20kg bags + priority x{PRIORITY_ADULTS} adults, both dirs)",
-        "totalEUR":     total,
-        "outboundFare": round(outbound_fare or 0, 2),
-        "inboundFare":  round(inbound_fare  or 0, 2),
+        "fetchStatus":     "ok",
+        "baseFare":        base,
+        "baggageFees":     bags,
+        "baggageNote":     f"€{bags:.2f} (est: {CHECKED_BAGS}x20kg bags + priority x{PRIORITY_ADULTS} adults, both dirs)",
+        "totalEUR":        total,
+        "outboundFare":    round(outbound_fare, 2),
+        "inboundFare":     round(inbound_fare, 2),
+        "outboundFlight":  f"{outbound_flight} {outbound_departs}",
+        "inboundFlight":   f"{inbound_flight} {inbound_departs}",
+        "note":            "Prices are total for all passengers (2 adults + 3 children)",
     }
 
 
@@ -358,7 +359,7 @@ def main():
     in_window   = sweet_start <= today_ord <= sweet_end
     past_window = today_ord > sweet_end
 
-    print(f"\n[{today}] Flight Tracker — DUB→FAO {OUTBOUND_DATE} / FAO→DUB {INBOUND_DATE}")
+    print(f"\n[{today}] Flight Tracker - DUB->FAO {OUTBOUND_DATE} / FAO->DUB {INBOUND_DATE}")
     print(f"Passengers: {ADULTS} adults + {CHILDREN} children | {days_to_flight}d to flight")
     if in_window:
         print(f"BUY WINDOW: active — {sweet_end - today_ord}d remaining (sweet spot: 40–60d out)")
