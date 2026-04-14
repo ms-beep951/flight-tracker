@@ -22,6 +22,8 @@ jobs:
         run: pip install requests
 
       - name: Fetch prices
+        env:
+          FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
         run: python fetch_prices.py
 
       - name: Commit updated prices.json

@@ -90,6 +90,25 @@
     .book-btn.ryan { background: #073590; color: #f7d200; }
     .book-note { font-size: 0.78rem; color: var(--muted); margin-top: 10px; }
 
+    /* Countdown */
+    .countdown-card { transition: border-color 0.3s; }
+    .window-status { font-size: 0.78rem; margin-top: 4px; font-weight: 600; }
+
+    /* Indicators card */
+    .ind-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; }
+    .ind-item { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; }
+    .ind-label { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); margin-bottom: 6px; }
+    .ind-value { font-size: 1.25rem; font-weight: 700; color: var(--text); }
+    .ind-delta { font-size: 0.72rem; color: var(--muted); margin-top: 3px; }
+    .ind-delta.up   { color: var(--red); }
+    .ind-delta.down { color: var(--green); }
+    .ind-delta.up-good   { color: var(--green); }
+    .ind-delta.down-bad  { color: var(--red); }
+    .ind-note { font-size: 0.7rem; color: var(--muted); margin-top: 4px; font-style: italic; }
+    .ind-sources { font-size: 0.7rem; color: var(--muted); margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--border); }
+    .ind-sources a { color: var(--blue); text-decoration: none; }
+    .ind-sources a:hover { text-decoration: underline; }
+
     /* No data */
     .no-data { text-align: center; padding: 60px 20px; color: var(--muted); }
     .no-data h2 { font-size: 1.1rem; margin-bottom: 8px; color: var(--text); }
@@ -106,8 +125,8 @@
   <div class="header-left">
     <h1>✈️ <span>DUB → FAO</span> Flight Price Tracker</h1>
     <div class="route-meta">
-      <div class="route-badge">🛫 <strong>Dublin → Faro</strong> · Wed 10 May 2026</div>
-      <div class="route-badge">🛬 <strong>Faro → Dublin</strong> · Tue 16 May 2026</div>
+      <div class="route-badge">🛫 <strong>Dublin → Faro</strong> · Thu 11 Jun 2026</div>
+      <div class="route-badge">🛬 <strong>Faro → Dublin</strong> · Tue 16 Jun 2026</div>
       <div class="route-badge">👨‍👩‍👧‍👦 <strong>2 Adults</strong> · 3 Children (7, 5 &amp; 2 yrs)</div>
     </div>
   </div>
@@ -153,6 +172,29 @@
       <div class="stat-value" id="stat-days">0</div>
       <div class="stat-delta" id="stat-days-sub">Tracking started —</div>
     </div>
+    <div class="stat-card countdown-card" id="countdown-card">
+      <div class="stat-label">Days Until Flight</div>
+      <div class="stat-value" id="stat-countdown">—</div>
+      <div class="window-status" id="stat-window">Calculating…</div>
+      <div class="stat-delta" style="margin-top:4px;font-size:0.7rem;color:var(--muted)">Sweet spot: 40–60 days out (Apr 12–May 2)</div>
+    </div>
+  </div>
+
+  <!-- Leading Indicators -->
+  <div class="card">
+    <div class="card-title">Leading Indicators — what drives ticket prices</div>
+    <div class="ind-grid" id="ind-grid">
+      <div class="ind-item"><div class="ind-label">EUR / USD</div><div class="ind-value" id="ind-eurusd">—</div><div class="ind-delta" id="ind-eurusd-d"></div><div class="ind-note">Higher = EUR stronger → cheaper USD-priced fuel (ECB daily)</div></div>
+      <div class="ind-item"><div class="ind-label">Jet Fuel EUR/tonne</div><div class="ind-value" id="ind-fuel">—</div><div class="ind-delta" id="ind-fuel-d"></div><div class="ind-note">~30% of Ryanair costs — rises precede ticket rises by 30–90d (FRED weekly)</div></div>
+      <div class="ind-item"><div class="ind-label">EU Airline Inflation</div><div class="ind-value" id="ind-infl">—</div><div class="ind-delta" id="ind-infl-d"></div><div class="ind-note">Eurostat HICP CP0733 · Ireland · 2015 = 100 (monthly)</div></div>
+      <div class="ind-item"><div class="ind-label">School Holidays</div><div class="ind-value" id="ind-school">—</div><div class="ind-note" id="ind-school-note"></div></div>
+      <div class="ind-item"><div class="ind-label">Search Demand</div><div class="ind-value" style="font-size:0.9rem;padding-top:4px"><a href="https://trends.google.com/trends/explore?q=flights+Dublin+Faro&geo=IE" target="_blank" rel="noopener" style="color:var(--blue);text-decoration:none;">Check Google Trends ↗</a></div><div class="ind-note">Demand spikes trigger algorithmic price rises within 24–48h</div></div>
+    </div>
+    <div class="ind-sources">
+      Sources: <a href="https://fred.stlouisfed.org/series/WJFUELUSGULF" target="_blank">FRED WJFUELUSGULF</a> (jet fuel, requires free API key) ·
+      <a href="https://data-api.ecb.europa.eu/service/data/EXR/D.USD.EUR.SP00.A" target="_blank">ECB</a> (EUR/USD) ·
+      <a href="https://ec.europa.eu/eurostat/web/hicp/database" target="_blank">Eurostat HICP CP0733</a> (airline inflation)
+    </div>
   </div>
 
   <!-- Chart -->
@@ -195,10 +237,10 @@
   <div class="card">
     <div class="card-title">Book Now</div>
     <div class="links-row">
-      <a class="book-btn sky" href="https://www.skyscanner.net/transport/flights/dub/fao/260510/260516/?adults=2&childrenv2=7|5|2&currency=EUR" target="_blank" rel="noopener">
+      <a class="book-btn sky" href="https://www.skyscanner.net/transport/flights/dub/fao/260611/260616/?adults=2&childrenv2=7|5|2&currency=EUR" target="_blank" rel="noopener">
         🔍 Search Skyscanner
       </a>
-      <a class="book-btn ryan" href="https://www.ryanair.com/en/ie/booking/home/DUBFAO/2026-05-10/FAODUB/2026-05-16/2/3/0/0" target="_blank" rel="noopener">
+      <a class="book-btn ryan" href="https://www.ryanair.com/en/ie/booking/home/DUBFAO/2026-06-11/FAODUB/2026-06-16/2/3/0/0" target="_blank" rel="noopener">
         ✈️ Book on Ryanair
       </a>
     </div>
@@ -242,6 +284,95 @@
     const cls = diff > 0 ? 'up' : diff < 0 ? 'down' : '';
     const sign = diff > 0 ? '+' : '';
     return `<span class="stat-delta ${cls}">vs yesterday: ${sign}€${Math.abs(diff).toFixed(2)}</span>`;
+  }
+
+  // ── Countdown timer (runs on page load, no data needed) ────────────────────
+  const FLIGHT_DT      = new Date('2026-06-11T00:00:00');
+  const SWEET_END_DT   = new Date('2026-05-02T00:00:00');  // 40 days before flight
+  const SWEET_START_DT = new Date('2026-04-12T00:00:00');  // 60 days before flight
+
+  function renderCountdown() {
+    const today = new Date(); today.setHours(0,0,0,0);
+    const msDay = 864e5;
+    const daysToFlight = Math.round((FLIGHT_DT - today) / msDay);
+    const daysLeftInWindow = Math.round((SWEET_END_DT - today) / msDay);
+    const daysUntilWindow  = Math.round((SWEET_START_DT - today) / msDay);
+    const inWindow  = today >= SWEET_START_DT && today <= SWEET_END_DT;
+    const pastWindow = today > SWEET_END_DT;
+
+    document.getElementById('stat-countdown').textContent = daysToFlight > 0 ? daysToFlight + 'd' : 'Today!';
+
+    const card = document.getElementById('countdown-card');
+    const win  = document.getElementById('stat-window');
+    if (inWindow) {
+      win.innerHTML = `<span style="color:var(--green)">✓ In buy window — ${daysLeftInWindow}d left</span>`;
+      card.style.borderColor = 'var(--green)';
+    } else if (pastWindow) {
+      win.innerHTML = `<span style="color:var(--red)">⚠ Past buy window — book now!</span>`;
+      card.style.borderColor = 'var(--red)';
+    } else {
+      win.innerHTML = `<span style="color:var(--amber)">Window opens in ${daysUntilWindow}d</span>`;
+      card.style.borderColor = 'var(--amber)';
+    }
+  }
+  renderCountdown();
+
+  // ── Indicator rendering ─────────────────────────────────────────────────────
+  function renderIndicators(data) {
+    if (!data.length) return;
+    const latest  = data[data.length - 1];
+    const prev    = data.length > 1 ? data[data.length - 2] : null;
+    const ind     = latest.indicators  || {};
+    const prevInd = prev?.indicators   || {};
+
+    function delta(curr, prev, upGood) {
+      if (curr === null || curr === undefined || prev === null || prev === undefined) return '';
+      const diff = curr - prev;
+      if (Math.abs(diff) < 0.0001) return '<span style="color:var(--muted)">unchanged</span>';
+      const pct  = ((diff / prev) * 100).toFixed(2);
+      const sign = diff > 0 ? '+' : '';
+      const cls  = diff > 0 ? (upGood ? 'up-good' : 'up') : (upGood ? 'down-bad' : 'down');
+      const arrow = diff > 0 ? '▲' : '▼';
+      return `<span class="ind-delta ${cls}">${arrow} ${sign}${pct}% vs prev reading</span>`;
+    }
+
+    // EUR/USD
+    if (ind.eurUsdStatus === 'ok' && ind.eurUsd) {
+      document.getElementById('ind-eurusd').textContent = ind.eurUsd.toFixed(4);
+      document.getElementById('ind-eurusd-d').innerHTML = delta(ind.eurUsd, prevInd.eurUsd, true);
+    }
+
+    // Jet fuel
+    const fuelEl = document.getElementById('ind-fuel');
+    if (ind.jetFuelStatus === 'ok' && ind.jetFuelEurPerTonne) {
+      fuelEl.textContent = '€' + ind.jetFuelEurPerTonne.toLocaleString('en-IE', {maximumFractionDigits: 0}) + '/t';
+      document.getElementById('ind-fuel-d').innerHTML = delta(ind.jetFuelEurPerTonne, prevInd.jetFuelEurPerTonne, false);
+    } else if (ind.jetFuelStatus === 'no_key') {
+      fuelEl.innerHTML = '<span style="color:var(--amber);font-size:0.8rem">Add FRED_API_KEY →<br>GitHub Secrets</span>';
+    }
+
+    // Airline inflation
+    if (ind.airlineInflStatus === 'ok' && ind.airlineInflIndex) {
+      document.getElementById('ind-infl').textContent = ind.airlineInflIndex + ' pts';
+      document.getElementById('ind-infl-d').innerHTML =
+        (ind.airlineInflPeriod ? `<span style="color:var(--muted)">${ind.airlineInflPeriod} · </span>` : '') +
+        delta(ind.airlineInflIndex, prevInd.airlineInflIndex, false);
+    }
+
+    // School holidays
+    const sh = ind.schoolHoliday || {};
+    const schoolEl = document.getElementById('ind-school');
+    schoolEl.textContent = sh.active ? '⚠ Holiday period' : 'Not in holidays';
+    schoolEl.style.color  = sh.active ? 'var(--red)' : 'var(--green)';
+    schoolEl.style.fontSize = '0.9rem';
+    if (sh.note) document.getElementById('ind-school-note').textContent = sh.note;
+  }
+
+  // ── Normalize array to index 100 at first non-null value ───────────────────
+  function toIndex100(arr) {
+    const first = arr.find(v => v !== null && v !== undefined);
+    if (!first) return arr.map(() => null);
+    return arr.map(v => v === null || v === undefined ? null : Math.round((v / first) * 1000) / 10);
   }
 
   async function render() {
@@ -295,6 +426,11 @@
 
     // Chart
     const labels = data.map(d => d.date);
+    const jetFuelRaw  = data.map(d => d.indicators?.jetFuelEurPerTonne ?? null);
+    const inflRaw     = data.map(d => d.indicators?.airlineInflIndex   ?? null);
+    const jetFuelIdx  = toIndex100(jetFuelRaw);
+    const inflIdx     = toIndex100(inflRaw);
+
     if (data.length === 0) {
       document.querySelector('#priceChart').style.display = 'none';
       document.getElementById('no-data-chart').style.display = 'block';
@@ -306,7 +442,7 @@
           labels,
           datasets: [
             {
-              label: 'Skyscanner (all-in)',
+              label: 'Skyscanner (all-in €)',
               data: skyPrices,
               borderColor: '#4f9cf9',
               backgroundColor: 'rgba(79,156,249,0.08)',
@@ -317,9 +453,10 @@
               tension: 0.3,
               spanGaps: false,
               fill: true,
+              yAxisID: 'y',
             },
             {
-              label: 'Ryanair (all-in)',
+              label: 'Ryanair (all-in €)',
               data: ryanPrices,
               borderColor: '#f97316',
               backgroundColor: 'rgba(249,115,22,0.06)',
@@ -330,7 +467,38 @@
               tension: 0.3,
               spanGaps: false,
               fill: true,
-            }
+              yAxisID: 'y',
+            },
+            {
+              label: 'Jet Fuel EUR/tonne (indexed)',
+              data: jetFuelIdx,
+              borderColor: '#f59e0b',
+              backgroundColor: 'transparent',
+              borderWidth: 1.5,
+              borderDash: [5, 3],
+              pointRadius: 3,
+              pointHoverRadius: 5,
+              pointBackgroundColor: '#f59e0b',
+              tension: 0.3,
+              spanGaps: true,
+              fill: false,
+              yAxisID: 'y1',
+            },
+            {
+              label: 'EU Airline Inflation (indexed)',
+              data: inflIdx,
+              borderColor: '#22c55e',
+              backgroundColor: 'transparent',
+              borderWidth: 1.5,
+              borderDash: [3, 3],
+              pointRadius: 3,
+              pointHoverRadius: 5,
+              pointBackgroundColor: '#22c55e',
+              tension: 0.3,
+              spanGaps: true,
+              fill: false,
+              yAxisID: 'y1',
+            },
           ]
         },
         options: {
@@ -351,7 +519,9 @@
               callbacks: {
                 label: ctx => {
                   const v = ctx.parsed.y;
-                  return v === null ? ' No data' : ` ${ctx.dataset.label}: €${v.toFixed(2)}`;
+                  if (v === null) return ` ${ctx.dataset.label}: No data`;
+                  if (ctx.dataset.yAxisID === 'y1') return ` ${ctx.dataset.label}: ${v.toFixed(1)} (idx)`;
+                  return ` ${ctx.dataset.label}: €${v.toFixed(2)}`;
                 }
               }
             }
@@ -362,16 +532,25 @@
               grid: { color: 'rgba(46,52,80,0.6)' }
             },
             y: {
-              ticks: {
-                color: '#8892aa',
-                callback: v => '€' + v.toLocaleString('en-IE')
-              },
-              grid: { color: 'rgba(46,52,80,0.6)' }
+              type: 'linear',
+              position: 'left',
+              ticks: { color: '#8892aa', callback: v => '€' + v.toLocaleString('en-IE') },
+              grid: { color: 'rgba(46,52,80,0.6)' },
+              title: { display: true, text: 'Total Price (EUR)', color: '#8892aa', font: { size: 11 } }
+            },
+            y1: {
+              type: 'linear',
+              position: 'right',
+              ticks: { color: '#8892aa', callback: v => v.toFixed(0) },
+              grid: { drawOnChartArea: false },
+              title: { display: true, text: 'Index (first reading = 100)', color: '#8892aa', font: { size: 11 } }
             }
           }
         }
       });
     }
+
+    renderIndicators(data);
 
     // Table
     if (data.length) {
