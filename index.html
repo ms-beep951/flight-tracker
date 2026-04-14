@@ -32,6 +32,8 @@
     .route-badge strong { color: var(--text); }
     .last-updated { font-size: 0.78rem; color: var(--muted); text-align: right; }
     .last-updated span { color: var(--text); font-weight: 600; }
+    .refresh-btn { display: inline-flex; align-items: center; gap: 6px; margin-top: 10px; padding: 8px 16px; background: var(--blue); color: #fff; border: none; border-radius: 8px; font-size: 0.82rem; font-weight: 600; cursor: pointer; text-decoration: none; transition: opacity 0.15s; }
+    .refresh-btn:hover { opacity: 0.85; }
 
     /* Sale Alert */
     #sale-banner { display: none; margin: 20px 40px 0; border-radius: 12px; padding: 16px 20px; border: 1px solid; }
@@ -110,7 +112,10 @@
     </div>
   </div>
   <div class="last-updated">
-    Last checked<br><span id="last-updated-ts">—</span>
+    Last checked<br><span id="last-updated-ts">—</span><br>
+    <a class="refresh-btn" href="https://github.com/ms-beep951/flight-tracker/actions/workflows/fetch_prices.yml" target="_blank" rel="noopener">
+      &#x21bb; Refresh Prices
+    </a>
   </div>
 </header>
 
