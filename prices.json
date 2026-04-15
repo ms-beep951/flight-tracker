@@ -44,12 +44,12 @@
     "date": "2026-04-15",
     "ryanair": {
       "fetchStatus": "ok",
-      "baseFare": 281.56,
+      "baseFare": 209.96,
       "baggageFees": 160.0,
       "baggageNote": "€160.00 (est: 2x20kg bags + priority x2 adults, both dirs)",
-      "totalEUR": 441.56,
+      "totalEUR": 369.96,
       "outboundFare": 149.98,
-      "inboundFare": 131.58,
+      "inboundFare": 59.98,
       "outboundFlight": "FR7034 2026-06-11T11:35:00",
       "inboundFlight": "FR7033 2026-06-16T08:00:00",
       "note": "Prices are total for all passengers (2 adults + 3 children)"
