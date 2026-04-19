@@ -203,5 +203,46 @@
         "note": "Flight is 15 days before Irish summer holidays — demand rising, book soon"
       }
     }
+  },
+  {
+    "date": "2026-04-19",
+    "ryanair": {
+      "fetchStatus": "ok",
+      "baseFare": 331.66,
+      "baggageFees": 160.0,
+      "baggageNote": "€160.00 (est: 2x20kg bags + priority x2 adults, both dirs)",
+      "totalEUR": 491.66,
+      "outboundFare": 181.18,
+      "inboundFare": 150.48,
+      "outboundFlight": "FR7030 2026-06-11T06:25:00",
+      "inboundFlight": "FR7033 2026-06-16T08:00:00",
+      "note": "Prices are total for all passengers (2 adults + 3 children)"
+    },
+    "skyscanner": {
+      "fetchStatus": "failed",
+      "reason": "403 Client Error: Forbidden for url: https://www.skyscanner.net/g/conductor/v1/fps3/search/?geo_schema=skyscanner&cabin_class=economy&response_include=query%3Bstats%3Bpaging"
+    },
+    "saleAlert": {
+      "active": false,
+      "details": "No active Ryanair sales detected"
+    },
+    "indicators": {
+      "eurUsd": 1.1797,
+      "eurUsdStatus": "ok",
+      "jetFuelUsdPerGallon": null,
+      "jetFuelEurPerTonne": null,
+      "jetFuelStatus": "no_key",
+      "jetFuelAsOf": null,
+      "airlineInflIndex": 115.8,
+      "airlineInflPeriod": "2025-12",
+      "airlineInflStatus": "ok",
+      "daysUntilFlight": 53,
+      "inBuyWindow": true,
+      "pastBuyWindow": false,
+      "schoolHoliday": {
+        "active": false,
+        "note": "Flight is 15 days before Irish summer holidays — demand rising, book soon"
+      }
+    }
   }
 ]
